@@ -1,6 +1,7 @@
 package com.gsy.safephonekt
 
 import android.annotation.SuppressLint
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -20,23 +21,23 @@ import java.net.URL
 /**
  * 手机卫士splash界面
  */
-val TAG = "SplashActivity"
+const val TAG = "SplashActivity"
 
 fun log(msg: String) {
     if (DEBUG) LogUtils.d(TAG, msg)
 }
 
 class SplashActivity : AppCompatActivity() {
-    var mRlRoot: View? = null
-    var versionCode: Int = 0
-    var versionName: String = ""
-    var tvVersionName: TextView? = null
-    val LOAD_MAIN = 0
-    val SHOW_UPDATE_DIALOG = 1
-    var urlBean: UrlBean? = null
+    private lateinit var mRlRoot: View
+    private lateinit var urlBean: UrlBean
+    private lateinit var tvVersionName: TextView
+    private var versionCode: Int = 0
+    private var versionName: String = ""
+    private val LOAD_MAIN = 0
+    private val SHOW_UPDATE_DIALOG = 1
 
 
-    val mHandle = @SuppressLint("HandlerLeak")
+    private val mHandle = @SuppressLint("HandlerLeak")
     object : Handler() {
         override fun handleMessage(msg: Message) {
             when (msg.what) {
@@ -52,7 +53,7 @@ class SplashActivity : AppCompatActivity() {
     private fun showUpdataDialog() {
         val build = AlertDialog.Builder(this)
         build.setTitle("提醒")
-                .setMessage("是否更新新版本，新版本具有以下特性：${urlBean?.desc}")
+                .setMessage("是否更新新版本，新版本具有以下特性：${urlBean.desc}")
                 .setNegativeButton("取消") { dialog, which ->
                     // 进入主界面
                     startActivity(Intent(this@SplashActivity, HomeActivity::class.java))
@@ -79,7 +80,7 @@ class SplashActivity : AppCompatActivity() {
         val packageInfo = pm.getPackageInfo(packageName, 0)
         versionCode = packageInfo.versionCode
         versionName = packageInfo.versionName
-        tvVersionName!!.text = versionName
+        tvVersionName.text = versionName
     }
 
     /**
@@ -114,7 +115,7 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun isNewVersion(startTime: Long) {
-        val serverCode = urlBean?.versionCode ?: 0
+        val serverCode = urlBean.versionCode
         log("serverCode $serverCode versionCode $versionCode")
         val endTime = System.currentTimeMillis()
         val delayTime = if (endTime - startTime >= 3000) 0 else 3000 - endTime + startTime
@@ -155,7 +156,7 @@ class SplashActivity : AppCompatActivity() {
         attSet.addAnimation(rote)
         attSet.addAnimation(scale)
 
-        mRlRoot!!.startAnimation(attSet)
+        mRlRoot.startAnimation(attSet)
     }
 
     private fun initView() {

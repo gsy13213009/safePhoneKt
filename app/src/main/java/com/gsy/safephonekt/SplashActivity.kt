@@ -11,9 +11,14 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.animation.*
 import android.widget.TextView
+import android.widget.Toast
 import com.gsy.safephonekt.data.UrlBean
 import org.json.JSONObject
+import org.xutils.common.Callback
+import org.xutils.http.RequestParams
+import org.xutils.x
 import java.io.BufferedReader
+import java.io.File
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
@@ -25,6 +30,10 @@ const val TAG = "SplashActivity"
 
 fun log(msg: String) {
     if (DEBUG) LogUtils.d(TAG, msg)
+}
+
+fun toast(msg: String) {
+    Toast.makeText(BaseApplication.getContext(),msg,Toast.LENGTH_SHORT).show()
 }
 
 class SplashActivity : AppCompatActivity() {
@@ -54,12 +63,30 @@ class SplashActivity : AppCompatActivity() {
         val build = AlertDialog.Builder(this)
         build.setTitle("提醒")
                 .setMessage("是否更新新版本，新版本具有以下特性：${urlBean.desc}")
-                .setNegativeButton("取消") { dialog, which ->
+                .setNegativeButton("取消") { _, _ ->
                     // 进入主界面
                     startActivity(Intent(this@SplashActivity, HomeActivity::class.java))
                 }
-                .setPositiveButton("更新") { dialog, which ->
+                .setPositiveButton("更新") { _, _ ->
                     log("更新主界面")
+                    val params = RequestParams(urlBean.url)
+                    params.saveFilePath = "/sdcard/xxx.apk"
+                    x.http().get(params,object :Callback.CommonCallback<File> {
+                        override fun onError(ex: Throwable?, isOnCallback: Boolean) {
+                            toast("下载失败 $ex")
+                        }
+
+                        override fun onCancelled(cex: Callback.CancelledException?) {
+                        }
+
+                        override fun onSuccess(result: File?) {
+                            toast("下载成功")
+                        }
+
+                        override fun onFinished() {
+                        }
+
+                    })
                 }
                 .setCancelable(false)
                 .show()

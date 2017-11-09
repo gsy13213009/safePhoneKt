@@ -87,6 +87,7 @@ class SplashActivity : AppCompatActivity() {
      */
     private fun checkVersion() {
         Thread {
+            val startTime = System.currentTimeMillis()
             val url = URL("http://172.18.15.212:8080/guardversion.json")
             val conn = url.openConnection() as HttpURLConnection
             conn.readTimeout = 5000
@@ -104,7 +105,7 @@ class SplashActivity : AppCompatActivity() {
                     line = reader.readLine()
                 }
                 urlBean = parseJson(jsonString.toString())
-                isNewVersion()
+                isNewVersion(startTime)
                 log("urlBean = $urlBean")
                 reader.close()                      // 关闭输入流
                 conn.disconnect()
@@ -112,15 +113,19 @@ class SplashActivity : AppCompatActivity() {
         }.start()
     }
 
-    private fun isNewVersion() {
-        val serverCode = urlBean?.versionCode ?:0
+    private fun isNewVersion(startTime: Long) {
+        val serverCode = urlBean?.versionCode ?: 0
         log("serverCode $serverCode versionCode $versionCode")
+        val endTime = System.currentTimeMillis()
+        val delayTime = if (endTime - startTime >= 3000) 0 else 3000 - endTime + startTime
         // 对比自己的版本
-        if (serverCode > versionCode) {
-            mHandle.sendEmptyMessage(SHOW_UPDATE_DIALOG)
-        } else {
-            mHandle.sendEmptyMessage(LOAD_MAIN)
-        }
+        mHandle.postDelayed({
+            if (serverCode > versionCode) {
+                mHandle.sendEmptyMessage(SHOW_UPDATE_DIALOG)
+            } else {
+                mHandle.sendEmptyMessage(LOAD_MAIN)
+            }
+        }, delayTime)
     }
 
     /**

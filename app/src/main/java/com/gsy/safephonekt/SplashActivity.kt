@@ -6,10 +6,7 @@ import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
-import android.os.Bundle
-import android.os.Handler
-import android.os.Message
+import android.os.*
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.FileProvider
@@ -20,14 +17,17 @@ import android.view.animation.*
 import android.widget.TextView
 import android.widget.Toast
 import com.gsy.safephonekt.data.UrlBean
+import org.json.JSONException
 import org.json.JSONObject
 import org.xutils.common.Callback
 import org.xutils.http.RequestParams
 import org.xutils.x
 import java.io.BufferedReader
 import java.io.File
+import java.io.IOException
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
+import java.net.MalformedURLException
 import java.net.URL
 
 /**
@@ -35,13 +35,15 @@ import java.net.URL
  */
 const val TAG = "SplashActivity"
 val REQUEST_STORAGE_PERMISSION = 3
-
+val ERROR_CODE_TYPE = 4
 fun log(msg: String) {
     if (DEBUG) LogUtils.d(TAG, msg)
 }
 
 fun toast(msg: String) {
-    Toast.makeText(BaseApplication.getContext(), msg, Toast.LENGTH_SHORT).show()
+    Handler(Looper.getMainLooper()).post {
+        Toast.makeText(BaseApplication.getContext(), msg, Toast.LENGTH_SHORT).show()
+    }
 }
 
 class SplashActivity : AppCompatActivity() {
@@ -60,6 +62,16 @@ class SplashActivity : AppCompatActivity() {
             when (msg.what) {
                 LOAD_MAIN -> loadMain()
                 SHOW_UPDATE_DIALOG -> showUpdateDialog()
+                ERROR_CODE_TYPE -> {
+                    when (msg.arg1) {
+                        404 -> toast("404资源找不到")
+                        4001 -> toast("没有网络")
+                        4002 -> toast("url格式错误")
+                        4003 -> toast("json数据有问题")
+
+                    }
+                    loadMain()
+                }
             }
         }
     }
@@ -80,7 +92,7 @@ class SplashActivity : AppCompatActivity() {
                     val params = RequestParams(urlBean.url)
                     params.saveFilePath = "/sdcard/xxx.apk"
                     File("/sdcard/xxx.apk").delete()
-                    x.http().get(params,object :Callback.CommonCallback<File> {
+                    x.http().get(params, object : Callback.CommonCallback<File> {
                         override fun onError(ex: Throwable?, isOnCallback: Boolean) {
                             toast("下载失败 $ex")
                             log("下载失败 $ex")
@@ -127,7 +139,7 @@ class SplashActivity : AppCompatActivity() {
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         }
         intent.setDataAndType(data, type)
-        startActivityForResult(intent,0)
+        startActivityForResult(intent, 0)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -158,27 +170,55 @@ class SplashActivity : AppCompatActivity() {
     private fun checkVersion() {
         Thread {
             val startTime = System.currentTimeMillis()
-            val url = URL("http://172.18.15.212:8080/guardversion.json")
-            val conn = url.openConnection() as HttpURLConnection
-            conn.readTimeout = 5000
-            conn.connectTimeout = 5000
-            conn.requestMethod = "GET"
-            val responseCode = conn.responseCode
-            log("responseCode = $responseCode")
-            if (responseCode == 200) {
-                val inputStream = conn.inputStream
-                val reader = BufferedReader(InputStreamReader(inputStream))
-                var line = reader.readLine()
-                val jsonString = StringBuilder()
-                while (line != null) {
-                    jsonString.append(line)
-                    line = reader.readLine()
+            var conn: HttpURLConnection? = null
+            var reader: BufferedReader? = null
+            var errorCode = -1
+            try {
+                val url = URL("http://172.18.15.212:8080/guardversion.json")
+                conn = url.openConnection() as HttpURLConnection
+                conn.readTimeout = 5000
+                conn.connectTimeout = 5000
+                conn.requestMethod = "GET"
+                val responseCode = conn.responseCode
+                log("responseCode = $responseCode")
+                if (responseCode == 200) {
+                    val inputStream = conn.inputStream
+                    reader = BufferedReader(InputStreamReader(inputStream))
+                    var line = reader.readLine()
+                    val jsonString = StringBuilder()
+                    while (line != null) {
+                        jsonString.append(line)
+                        line = reader.readLine()
+                    }
+                    urlBean = parseJson(jsonString.toString())
+                    log("urlBean = $urlBean")
+                } else {
+                    errorCode = 404
                 }
-                urlBean = parseJson(jsonString.toString())
-                isNewVersion(startTime)
-                log("urlBean = $urlBean")
-                reader.close()                      // 关闭输入流
-                conn.disconnect()
+            } catch (e: MalformedURLException) {
+                errorCode = 4002
+                log(e.toString())
+            } catch (e: JSONException) {
+                errorCode = 4003
+                log(e.toString())
+            } catch (e: IOException) {
+                errorCode = 4001
+                log(e.toString())
+            } finally {
+                val msg = Message.obtain()
+                if (errorCode == -1) {
+                    msg.what = isNewVersion()
+                } else {
+                    msg.what = ERROR_CODE_TYPE
+                    msg.arg1 = errorCode
+                }
+                val endTime = System.currentTimeMillis()
+                val delayTime = if (endTime - startTime >= 3000) 0 else 3000 - endTime + startTime
+                mHandle.postDelayed({
+                    mHandle.sendMessage(msg)
+                }, delayTime)
+                reader?.close()                      // 关闭输入流
+                conn?.disconnect()
             }
         }.start()
     }
@@ -186,19 +226,15 @@ class SplashActivity : AppCompatActivity() {
     /**
      * 判断是否有新版本
      */
-    private fun isNewVersion(startTime: Long) {
+    private val isNewVersion = {
         val serverCode = urlBean.versionCode
         log("serverCode $serverCode versionCode $versionCode")
-        val endTime = System.currentTimeMillis()
-        val delayTime = if (endTime - startTime >= 3000) 0 else 3000 - endTime + startTime
         // 对比自己的版本
-        mHandle.postDelayed({
-            if (serverCode > versionCode) {
-                mHandle.sendEmptyMessage(SHOW_UPDATE_DIALOG)
-            } else {
-                mHandle.sendEmptyMessage(LOAD_MAIN)
-            }
-        }, delayTime)
+        if (serverCode > versionCode) {
+            SHOW_UPDATE_DIALOG
+        } else {
+            LOAD_MAIN
+        }
     }
 
     /**

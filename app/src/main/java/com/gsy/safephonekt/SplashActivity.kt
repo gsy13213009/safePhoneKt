@@ -14,6 +14,7 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.animation.*
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import com.gsy.safephonekt.data.UrlBean
@@ -54,6 +55,7 @@ class SplashActivity : AppCompatActivity() {
     private var versionName: String = ""
     private val LOAD_MAIN = 0
     private val SHOW_UPDATE_DIALOG = 1
+    lateinit var pbDownload: ProgressBar
 
 
     private val mHandle = @SuppressLint("HandlerLeak")
@@ -92,7 +94,20 @@ class SplashActivity : AppCompatActivity() {
                     val params = RequestParams(urlBean.url)
                     params.saveFilePath = "/sdcard/xxx.apk"
                     File("/sdcard/xxx.apk").delete()
-                    x.http().get(params, object : Callback.CommonCallback<File> {
+                    x.http().get(params, object : Callback.ProgressCallback<File> {
+                        override fun onWaiting() {
+                        }
+
+                        override fun onStarted() {
+                            pbDownload.visibility = View.VISIBLE
+                        }
+
+                        override fun onLoading(total: Long, current: Long, isDownloading: Boolean) {
+                            pbDownload.max = total.toInt()
+                            pbDownload.progress = current.toInt()
+
+                        }
+
                         override fun onError(ex: Throwable?, isOnCallback: Boolean) {
                             toast("下载失败 $ex")
                             log("下载失败 $ex")
@@ -107,6 +122,7 @@ class SplashActivity : AppCompatActivity() {
                         }
 
                         override fun onFinished() {
+                            pbDownload.visibility = View.GONE
                         }
                     })
                 }
@@ -276,6 +292,7 @@ class SplashActivity : AppCompatActivity() {
     private fun initView() {
         mRlRoot = findViewById(R.id.rl_splash_root)
         tvVersionName = findViewById(R.id.tv_splash_version_name) as TextView
+        pbDownload = findViewById(R.id.pb_download) as ProgressBar
     }
 
     /**

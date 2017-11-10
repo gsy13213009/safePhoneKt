@@ -19,4 +19,13 @@
     android:layout_centerHorizontal="true"
     android:layout_below="@id/tv_splash_version_name" />
 
+  <ProgressBar
+    android:layout_width="match_parent"
+    style="?android:attr/progressBarStyleHorizontal"
+    android:layout_alignParentBottom="true"
+    android:layout_margin="10dp"
+    android:visibility="gone"
+    android:layout_height="wrap_content"
+    android:id="@+id/pb_download" />
+
 </RelativeLayout>

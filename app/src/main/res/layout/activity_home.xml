@@ -1,7 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
   android:layout_width="match_parent"
-  android:layout_height="match_parent">
+  android:layout_height="match_parent"
+  android:orientation="vertical">
 
+  <TextView
+    android:id="@+id/textView"
+    style="@style/TvTitle"
+    android:text="主界面" />
 
-</android.support.constraint.ConstraintLayout>
+  <com.gsy.safephonekt.view.RollTextView
+    android:id="@+id/roll_tv"
+    android:layout_width="match_parent"
+    android:layout_height="25dp"
+    android:ellipsize="marquee"
+    android:gravity="center"
+    android:singleLine="true"
+    android:text="范德萨发进来的撒娇发了大家撒路口附近的来看撒娇发了大家撒浪费大家临时卡"
+    android:textSize="16sp" />
+
+  <GridView
+    android:id="@+id/gv_home"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:listSelector="@drawable/gv_list_selector"
+    android:numColumns="3"
+    android:verticalSpacing="10dp" />
+
+</LinearLayout>

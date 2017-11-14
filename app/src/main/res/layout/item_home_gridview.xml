@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="wrap_content"
+  android:gravity="center"
+  android:orientation="vertical"
+  android:layout_height="wrap_content">
+
+  <ImageView
+    android:id="@+id/iv_item_home_gv_icon"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:scaleType="fitXY"
+    android:src="@mipmap/app" />
+
+  <TextView
+    android:id="@+id/tv_item_home_gv_name"
+    android:layout_width="wrap_content"
+    android:textSize="14dp"
+    android:textColor="@android:color/black"
+    android:text="手机防盗"
+    android:layout_height="wrap_content" />
+
+</LinearLayout>

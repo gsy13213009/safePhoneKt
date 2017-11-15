@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical">
+
+  <TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="通过绑定手SIM卡：\n下次重启手机入股发现sim卡不一致，就发送短信报警" />
+
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:background="@drawable/bt_selector"
+    android:gravity="center">
+
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerVertical="true"
+      android:text="点击绑定/解绑SIM卡" />
+
+    <ImageView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentRight="true"
+      android:layout_centerVertical="true"
+      android:src="@mipmap/unlock" />
+
+  </RelativeLayout>
+
+  <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:gravity="center">
+
+    <View
+      android:layout_width="10dp"
+      android:layout_height="10dp"
+      android:background="@android:drawable/presence_invisible" />
+
+    <View
+      android:layout_width="10dp"
+      android:layout_height="10dp"
+      android:layout_marginLeft="5dp"
+      android:background="@android:drawable/presence_online" />
+
+    <View
+      android:layout_width="10dp"
+      android:layout_height="10dp"
+      android:layout_marginLeft="5dp"
+      android:background="@android:drawable/presence_invisible" />
+
+    <View
+      android:layout_width="10dp"
+      android:layout_height="10dp"
+      android:layout_marginLeft="5dp"
+      android:background="@android:drawable/presence_invisible" />
+
+  </LinearLayout>
+
+  <RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_centerInParent="true"
+      android:src="@mipmap/bind" />
+
+  </RelativeLayout>
+
+</LinearLayout>

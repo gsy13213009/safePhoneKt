@@ -1,8 +1,7 @@
-package com.gsy.safephonekt
+package com.gsy.safephonekt.activity
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.ContentValues.TAG
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -17,6 +16,10 @@ import android.view.animation.*
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import com.gsy.safephonekt.BaseApplication
+import com.gsy.safephonekt.DEBUG
+import com.gsy.safephonekt.LogUtils
+import com.gsy.safephonekt.R
 import com.gsy.safephonekt.data.UrlBean
 import org.json.JSONException
 import org.json.JSONObject
@@ -34,12 +37,8 @@ import java.net.URL
 /**
  * 手机卫士splash界面
  */
-const val TAG = "SplashActivity"
 val REQUEST_STORAGE_PERMISSION = 3
 val ERROR_CODE_TYPE = 4
-fun log(msg: String) {
-    if (DEBUG) LogUtils.d(TAG, msg)
-}
 
 fun toast(msg: String) {
     Handler(Looper.getMainLooper()).post {
@@ -48,6 +47,11 @@ fun toast(msg: String) {
 }
 
 class SplashActivity : AppCompatActivity() {
+    private val TAG = "SplashActivity"
+    fun log(msg: String) {
+        if (DEBUG) LogUtils.d(TAG, msg)
+    }
+
     private lateinit var mRlRoot: View
     private lateinit var urlBean: UrlBean
     private lateinit var tvVersionName: TextView

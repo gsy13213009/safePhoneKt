@@ -14,9 +14,20 @@ class SpTools {
             sp.edit().putString(key, value).apply()
         }
 
-        fun getString(key: String, defValue: String) = {
+        fun getString(key: String, defValue: String): String {
             val sp = BaseApplication.getContext().getSharedPreferences(SP_FILE, Context.MODE_PRIVATE)
-            sp.getString(key, defValue)
+            return sp.getString(key, defValue)
         }
+
+        fun putBoolean(key: String, value: Boolean) {
+            val sp = BaseApplication.getContext().getSharedPreferences(SP_FILE, Context.MODE_PRIVATE)
+            sp.edit().putBoolean(key, value).apply()
+        }
+
+        fun getBoolean(key: String, defValue: Boolean): Boolean {
+            val sp = BaseApplication.getContext().getSharedPreferences(SP_FILE, Context.MODE_PRIVATE)
+            return sp.getBoolean(key, defValue)
+        }
+
     }
 }

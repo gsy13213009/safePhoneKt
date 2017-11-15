@@ -20,6 +20,7 @@
     android:layout_height="wrap_content">
 
     <Button
+      android:onClick="prev"
       android:id="@+id/bt_pre"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -28,6 +29,7 @@
       android:visibility="gone" />
 
     <Button
+      android:onClick="next"
       android:id="@+id/bt_next"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"

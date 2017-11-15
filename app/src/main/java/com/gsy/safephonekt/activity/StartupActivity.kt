@@ -20,6 +20,7 @@ class StartupActivity : AppCompatActivity() {
     private lateinit var mBtPre: Button
     private lateinit var mBtNext: Button
     lateinit var mView: Array<BaseFragmet>
+    var mCurrent = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +32,30 @@ class StartupActivity : AppCompatActivity() {
     private fun initData() {
         mView = arrayOf(SetupFragment1(this), SetupFragment2(this), SetupFragment3(this), SetupFragment4(this))
         mViewPager.adapter = MyAdapter()
+        mCurrent = mViewPager.currentItem
+        mViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {
+
+            }
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                if (position == mView.size - 1) {
+                    mBtNext.text = "完成"
+                } else {
+                    mBtNext.text = "下一步"
+                }
+                if (position == 0) {
+                    mBtPre.visibility = View.GONE
+                } else {
+                    mBtPre.visibility = View.VISIBLE
+                }
+                mCurrent = position
+            }
+
+            override fun onPageSelected(position: Int) {
+            }
+
+        })
     }
 
     private fun initView() {
@@ -60,6 +85,18 @@ class StartupActivity : AppCompatActivity() {
         }
 
 
+    }
+
+    public fun prev(view: View) {
+        if (mCurrent > 0) {
+            mViewPager.currentItem = mCurrent - 1
+        }
+    }
+
+    public fun next(view: View) {
+        if (mCurrent < 3) {
+            mViewPager.currentItem = mCurrent + 1
+        }
     }
 
 }

@@ -25,6 +25,11 @@ class SetupFragment2(context: Context) : BaseFragmet(context) {
     }
 
     override fun initData() {
+        if (SpTools.getString(SIM_INFO, "").isEmpty()) {
+            mIvLock.setImageResource(R.mipmap.unlock)
+        } else {
+            mIvLock.setImageResource(R.drawable.lock)
+        }
         mBindBtn.setOnClickListener {
             if (SpTools.getString(SIM_INFO, "").isEmpty()) {
                 val tm = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager

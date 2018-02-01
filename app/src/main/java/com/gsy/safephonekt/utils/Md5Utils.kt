@@ -5,13 +5,13 @@ import com.gsy.safephonekt.LogUtils
 import java.security.MessageDigest
 
 /**
- * Created by gsy on 2017/11/14.
+ * md5 加密器
  */
 val TAG = "Md5Utils"
 
 class Md5Utils {
     companion object {
-        fun log(str: String) {
+        private fun log(str: String) {
             if (DEBUG) LogUtils.d(TAG, str)
         }
 
@@ -22,11 +22,11 @@ class Md5Utils {
             val builder = StringBuilder()
             for (byte in digest) {
                 val b = byte.toInt() and 0xff
-                var hexStirng = Integer.toHexString(b)
-                if (hexStirng.length == 1) {
-                    hexStirng = "0" + hexStirng
+                var hexString = Integer.toHexString(b)
+                if (hexString.length == 1) {
+                    hexString = "0" + hexString
                 }
-                builder.append(hexStirng)
+                builder.append(hexString)
             }
             log(builder.toString())
             return builder.toString()

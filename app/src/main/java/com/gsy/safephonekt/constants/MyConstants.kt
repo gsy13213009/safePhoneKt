@@ -6,3 +6,4 @@ package com.gsy.safephonekt.constants
 val SP_FILE = "config"
 val PASSWORD = "password"
 val IS_SETUP = "is_setup"
+val SIM_INFO = "sim_info"

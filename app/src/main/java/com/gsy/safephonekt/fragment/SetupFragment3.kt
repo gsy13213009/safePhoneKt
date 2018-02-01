@@ -17,4 +17,7 @@ class SetupFragment3(context: Context) : BaseFragmet(context) {
 
     }
 
+    override fun canNext(): Boolean  = true
+
+
 }

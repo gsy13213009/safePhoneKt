@@ -20,4 +20,6 @@ abstract class BaseFragmet(val context: Context) {
     public fun getRootView() = mRootView
 
     abstract fun initData()
+
+    abstract fun canNext():Boolean
 }

@@ -10,6 +10,7 @@
     android:text="通过绑定手SIM卡：\n下次重启手机入股发现sim卡不一致，就发送短信报警" />
 
   <RelativeLayout
+    android:id="@+id/rl_btn_bind_sim"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="10dp"
@@ -23,8 +24,9 @@
       android:text="点击绑定/解绑SIM卡" />
 
     <ImageView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
+      android:id="@+id/iv_lock"
+      android:layout_width="30dp"
+      android:layout_height="30dp"
       android:layout_alignParentRight="true"
       android:layout_centerVertical="true"
       android:src="@mipmap/unlock" />

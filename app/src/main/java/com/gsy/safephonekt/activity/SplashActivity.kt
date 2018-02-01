@@ -38,6 +38,7 @@ import java.net.URL
  * 手机卫士splash界面
  */
 val REQUEST_STORAGE_PERMISSION = 3
+val REQUEST_READ_PHONE_STATE_PERMISSION = 2
 val ERROR_CODE_TYPE = 4
 
 fun toast(msg: String) {
@@ -168,6 +169,9 @@ class SplashActivity : AppCompatActivity() {
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_STORAGE_PERMISSION)
+        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_PHONE_STATE), REQUEST_READ_PHONE_STATE_PERMISSION)
         }
 
         initView()
@@ -307,6 +311,7 @@ class SplashActivity : AppCompatActivity() {
         if (grantResults.size == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             when (requestCode) {
                 REQUEST_STORAGE_PERMISSION -> Toast.makeText(this, "申请外部存储权限成功", Toast.LENGTH_SHORT).show()
+                REQUEST_READ_PHONE_STATE_PERMISSION -> Toast.makeText(this, "申请READ_PHONE_STATE成功", Toast.LENGTH_SHORT).show()
             }
         }
     }
